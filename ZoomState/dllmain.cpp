@@ -47,12 +47,12 @@ int zoomReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
     if (value) {
         num = SCtrlReadExpList(value, "ii", pcache, &TEMP, &zoom->x, &zoom->y);
         if (num != 2) {
-            setErrorText("Illegal pos parameter");
+            setErrorText("Illegal pos parameter for zoom");
             return FALSE;
         }
     }
     else {
-        setErrorText("Missing pos parameter");
+        setErrorText("Missing pos parameter for zoom");
         return FALSE;
     }
 
@@ -60,12 +60,12 @@ int zoomReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
     if (value) {
         num = SCtrlReadExpList(value, "f", pcache, &TEMP, &zoom->scale);
         if (num != 1) {
-            setErrorText("Illegal scale parameter");
+            setErrorText("Illegal scale parameter for zoom");
             return FALSE;
         }
     }
     else {
-        setErrorText("Missing scale parameter");
+        setErrorText("Missing scale parameter for zoom");
         return FALSE;
     }
 
@@ -75,8 +75,23 @@ int zoomReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
 void zoomProc(PLAYER* p, STATE_INFO* sinfo) {
     ST_ZOOM* zoom = (ST_ZOOM*)sinfo->params;
     x = EvalExpression(p,&zoom->x, 0);
+    if (x < 0) {
+        VWarn(p, "zoom pos x too small: %d", x);
+    }
+    else if (x > 320) {
+        VWarn(p, "zoom pos x too big: %d", x);
+    }
     y = EvalExpression(p, &zoom->y, 0);
+    if (y < 0) {
+        VWarn(p, "zoom pos y too small: %d", x);
+    }
+    else if (y > 240) {
+        VWarn(p, "zoom pos y too big: %d", x);
+    }
     scale = EvalExpression(p, &zoom->scale);
+    if (scale < 1.0) {
+        VWarn(p, "zoom scale too small: %f", scale);
+    }
     return;
 }
 
