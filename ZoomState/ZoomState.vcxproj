@@ -24,7 +24,7 @@
     <ProjectGuid>{fec29a2a-d52b-404c-a6dc-d97ccd340399}</ProjectGuid>
     <RootNamespace>Zoom</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>Zoom</ProjectName>
+    <ProjectName>ZoomState</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
