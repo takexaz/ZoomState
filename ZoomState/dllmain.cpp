@@ -1,7 +1,9 @@
 ﻿// dllmain.cpp : DLL アプリケーションのエントリ ポイントを定義します。
 #include "pch.h"
 #include <Mebius.h>
-#include <StateControllerEx.h>
+#include <StateControllerExtension.h>
+#pragma comment(lib, "Mebius.lib")
+#pragma comment(lib, "StateControllerExtension.lib")
 
 auto SpriteArrayAccess = reinterpret_cast<DWORD * (*)(DWORD ptr, DWORD ptr2)>(0x44eeb0);
 auto DrawToScreen = reinterpret_cast<void (*)(void)>(0x4174e0);
@@ -18,9 +20,9 @@ auto destroy_bitmap = reinterpret_cast<void (*)(ALLEG_BITMAP * bitmap)>(GetProcA
 auto stretch_blit = reinterpret_cast<void (*)(ALLEG_BITMAP * source, ALLEG_BITMAP * dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_w, int dest_h)>(GetProcAddress(allegro, "stretch_blit"));
 auto blit = reinterpret_cast<void (*)(ALLEG_BITMAP * source, ALLEG_BITMAP * dest, int source_x, int source_y, int dest_x, int dest_y, int width, int height)>(GetProcAddress(allegro, "blit"));
 
-int stcReg(TPFILE*, STATE_INFO*, PLAYER_CACHE*);
-void stcProc(PLAYER*, STATE_INFO*);
-void stcFree(STATE_INFO*);
+int zoomReg(TPFILE*, STATE_INFO*, PLAYER_CACHE*);
+void zoomProc(PLAYER*, STATE_INFO*);
+void zoomFree(STATE_INFO*);
 void zoomScreen(ALLEG_BITMAP*, int, int, float);
 void zoomHook(void);
 
@@ -34,7 +36,7 @@ int y = 0;
 float scale = 1.0;
 
 // FALSE=Error
-int stcReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
+int zoomReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
     ST_ZOOM* zoom = new ST_ZOOM;
     sinfo->params = zoom;
     DWORD TEMP;
@@ -70,7 +72,7 @@ int stcReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
     return TRUE;
 }
 
-void stcProc(PLAYER* p, STATE_INFO* sinfo) {
+void zoomProc(PLAYER* p, STATE_INFO* sinfo) {
     ST_ZOOM* zoom = (ST_ZOOM*)sinfo->params;
     x = EvalExpression(p,&zoom->x, 0);
     y = EvalExpression(p, &zoom->y, 0);
@@ -78,7 +80,7 @@ void stcProc(PLAYER* p, STATE_INFO* sinfo) {
     return;
 }
 
-void stcFree(STATE_INFO* sinfo) {
+void zoomFree(STATE_INFO* sinfo) {
     ST_ZOOM* zoom = (ST_ZOOM*)sinfo->params;
     FreeExpression(&zoom->x);
     FreeExpression(&zoom->y);
@@ -140,8 +142,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
     switch (ul_reason_for_call)
     {
     case DLL_PROCESS_ATTACH: {
-        Hook((DWORD)DrawToScreen, (DWORD)zoomHook, HEAD);
-        addState("zoom", (DWORD)stcReg, (DWORD)stcProc, (DWORD)stcFree);
+        Hook(DrawToScreen, zoomHook, HEAD);
+        STX zoom = {
+            "zoom",
+            zoomReg,
+            zoomProc,
+            zoomFree,
+        };
+        addState(zoom);
     }
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
