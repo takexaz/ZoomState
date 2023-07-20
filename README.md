@@ -1,4 +1,4 @@
-# Zoom
+# ZoomState
 
 - used StateControllerExtension
 - Logical Zoom
