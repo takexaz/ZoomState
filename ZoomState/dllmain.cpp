@@ -39,17 +39,32 @@ int stcReg(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
     sinfo->params = zoom;
     DWORD TEMP;
 
-    constExp(&zoom->x, 0);
-    constExp(&zoom->y, 0);
-    const char* value = TPGetValue(tpf, "pos");
+    const char* value;
+    int num;
+    value = TPGetValue(tpf, "pos");
     if (value) {
-        SCtrlReadExpList(value, "ii", pcache, &TEMP, &zoom->x, &zoom->y);
+        num = SCtrlReadExpList(value, "ii", pcache, &TEMP, &zoom->x, &zoom->y);
+        if (num != 2) {
+            setErrorText("Illegal pos parameter");
+            return FALSE;
+        }
+    }
+    else {
+        setErrorText("Missing pos parameter");
+        return FALSE;
     }
 
-    constExp(&zoom->scale, 1.0f);
     value = TPGetValue(tpf, "scale");
     if (value) {
-        SCtrlReadExpList(value, "f", pcache, &TEMP, &zoom->scale);
+        num = SCtrlReadExpList(value, "f", pcache, &TEMP, &zoom->scale);
+        if (num != 1) {
+            setErrorText("Illegal scale parameter");
+            return FALSE;
+        }
+    }
+    else {
+        setErrorText("Missing scale parameter");
+        return FALSE;
     }
 
     return TRUE;
@@ -102,14 +117,12 @@ void zoomScreen(ALLEG_BITMAP* screen, int posx, int posy, float scale) {
 }
 
 void zoomHook(void) {
-
-    // Screen取得
-    DWORD V_Current = *((DWORD*)0x4B6038);
-    DWORD V_CurrentIdx = *((DWORD*)0x4B603C);
-    DWORD* sprArray = SpriteArrayAccess(V_Current, V_CurrentIdx);
-    ALLEG_BITMAP* screen = (ALLEG_BITMAP*)*(sprArray + 9);
-
     if (scale > 1.0) {
+        // Screen取得
+        DWORD V_Current = *((DWORD*)0x4B6038);
+        DWORD V_CurrentIdx = *((DWORD*)0x4B603C);
+        DWORD* sprArray = SpriteArrayAccess(V_Current, V_CurrentIdx);
+        ALLEG_BITMAP* screen = (ALLEG_BITMAP*)*(sprArray + 9);
         zoomScreen(screen, x, y, scale);
         x = 0;
         y = 0;
