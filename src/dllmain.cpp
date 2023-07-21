@@ -10,9 +10,9 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD  ul_reason_for_call, LPVOID lpReser
         Hook(DrawToScreen, zoomHook, HEAD);
         STX zoom = {
             "zoom",
-            zoomReg,
-            zoomProc,
-            zoomFree,
+            stxRegister,
+            stxProcess,
+            stxFree,
         };
         addState(zoom);
     }

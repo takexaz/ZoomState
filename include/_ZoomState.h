@@ -1,3 +1,5 @@
+#include <StateControllerExtension.h>
+
 struct ST_ZOOM {
     EVAL_EXP x, y;
     EVAL_EXP scale;
@@ -19,8 +21,12 @@ static auto destroy_bitmap = reinterpret_cast<void (*)(ALLEG_BITMAP * bitmap)>(G
 static auto stretch_blit = reinterpret_cast<void (*)(ALLEG_BITMAP * source, ALLEG_BITMAP * dest, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int dest_w, int dest_h)>(GetProcAddress(allegro, "stretch_blit"));
 static auto blit = reinterpret_cast<void (*)(ALLEG_BITMAP * source, ALLEG_BITMAP * dest, int source_x, int source_y, int dest_x, int dest_y, int width, int height)>(GetProcAddress(allegro, "blit"));
 
-int zoomReg(TPFILE*, STATE_INFO*, PLAYER_CACHE*);
-void zoomProc(PLAYER*, STATE_INFO*);
-void zoomFree(STATE_INFO*);
+extern int gx;
+extern int gy;
+extern float gscale;
+
+int stxRegister(TPFILE*, STATE_INFO*, PLAYER_CACHE*);
+void stxProcess(PLAYER*, STATE_INFO*);
+void stxFree(STATE_INFO*);
 void zoomScreen(ALLEG_BITMAP*, int, int, float);
 void zoomHook(void);
