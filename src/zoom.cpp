@@ -30,7 +30,7 @@ void zoomScreen(ALLEG_BITMAP* screen, int x, int y, float scale) {
     destroy_bitmap(screenBackup);
 }
 
-void zoomHook(void) {
+void zoomHook(void** stack) {
     if (gscale > 1.0) {
         // Screen取得
         DWORD V_Current = *((DWORD*)0x4B6038);
