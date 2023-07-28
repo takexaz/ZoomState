@@ -1,3 +1,4 @@
+#pragma once
 #include <StateControllerExtension.h>
 
 struct ST_ZOOM {
