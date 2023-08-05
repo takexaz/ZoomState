@@ -2,8 +2,8 @@
 #include <StateControllerExtension.h>
 
 struct ST_ZOOM {
-    EVAL_EXP x, y;
-    EVAL_EXP scale;
+    MUGEN_EVAL_VALUE x, y;
+    MUGEN_EVAL_VALUE scale;
 };
 
 struct ALLEG_BITMAP {
@@ -14,7 +14,6 @@ struct ALLEG_BITMAP {
 };
 
 static auto SpriteArrayAccess = reinterpret_cast<DWORD * (*)(DWORD ptr, DWORD ptr2)>(0x44eeb0);
-static auto DrawToScreen = reinterpret_cast<void (*)(void)>(0x4174e0);
 
 static HINSTANCE allegro = GetModuleHandleA((LPCSTR)"alleg40");
 static auto create_bitmap = reinterpret_cast<ALLEG_BITMAP * (*)(int width, int height)>(GetProcAddress(allegro, "create_bitmap"));
@@ -26,8 +25,8 @@ extern int gx;
 extern int gy;
 extern float gscale;
 
-int stxRegister(TPFILE*, STATE_INFO*, PLAYER_CACHE*);
-void stxProcess(PLAYER*, STATE_INFO*);
-void stxFree(STATE_INFO*);
+int stxRegister(TPFILE*, MUGEN_SC_DATA_EX*, MUGEN_PLAYER_INFO*);
+void stxProcess(MUGEN_PLAYER*, MUGEN_SC_DATA_EX*);
+void stxFree(MUGEN_SC_DATA_EX*);
 void zoomScreen(ALLEG_BITMAP*, int, int, float);
 void zoomHook(void**);

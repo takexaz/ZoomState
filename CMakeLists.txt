@@ -1,4 +1,4 @@
-﻿cmake_minimum_required (VERSION 3.12)
+﻿cmake_minimum_required (VERSION 3.15)
 
 project (ZoomState VERSION 0.1.0 LANGUAGES CXX)
 
@@ -51,20 +51,23 @@ target_compile_options (
 	/utf-8
 	$<$<CONFIG:Debug>:
 		/GR
-		/guard:cf
+		/JMC
 		/MDd
 		/Ob0
 		/Od
-		/Zi
+		/RTC1
+		/ZI
 	>
 	$<$<CONFIG:Release>:
+		/GA
 		/GL
 		/GR-
+		/Gy
 		/guard:cf-
 		/MD
 		/O2
+		/Oi
 		/Os
-		/Zc:inline
 	>
 )
 target_link_options (

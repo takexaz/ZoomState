@@ -1,16 +1,17 @@
 #include <StateControllerExtension.h>
+#include <Winmugen.h>
 #include "_ZoomState.h"
 
-int stxRegister(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
+int stxRegister(TPFILE* tpf, MUGEN_SC_DATA_EX* scdx, MUGEN_PLAYER_INFO* pinfo) {
     ST_ZOOM* zoom = new ST_ZOOM;
-    sinfo->params = zoom;
+    scdx->SCX->params = zoom;
     const char* parseEnd;
 
     const char* value;
     int num;
     value = TPGetValue(tpf, "pos");
     if (value) {
-        num = SCtrlReadExpList(value, "ii", pcache, &parseEnd, &zoom->x, &zoom->y);
+        num = SCtrlReadExpList(value, "ii", pinfo, &parseEnd, &zoom->x, &zoom->y);
         if (num != 2) {
             setErrorText("Illegal pos parameter for zoom");
             return FALSE;
@@ -23,7 +24,7 @@ int stxRegister(TPFILE* tpf, STATE_INFO* sinfo, PLAYER_CACHE* pcache) {
 
     value = TPGetValue(tpf, "scale");
     if (value) {
-        num = SCtrlReadExpList(value, "f", pcache, &parseEnd, &zoom->scale);
+        num = SCtrlReadExpList(value, "f", pinfo, &parseEnd, &zoom->scale);
         if (num != 1) {
             setErrorText("Illegal scale parameter for zoom");
             return FALSE;

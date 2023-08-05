@@ -1,4 +1,5 @@
 ﻿#include <StateControllerExtension.h>
+#include <Winmugen.h>
 #include "_ZoomState.h"
 
 void zoomScreen(ALLEG_BITMAP* screen, int x, int y, float scale) {
@@ -33,8 +34,6 @@ void zoomScreen(ALLEG_BITMAP* screen, int x, int y, float scale) {
 void zoomHook(void** stack) {
     if (gscale > 1.0) {
         // Screen取得
-        DWORD V_Current = *((DWORD*)0x4B6038);
-        DWORD V_CurrentIdx = *((DWORD*)0x4B603C);
         DWORD* sprArray = SpriteArrayAccess(V_Current, V_CurrentIdx);
         ALLEG_BITMAP* screen = (ALLEG_BITMAP*)*(sprArray + 9);
         zoomScreen(screen, gx, gy, gscale);
